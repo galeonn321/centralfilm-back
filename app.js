@@ -1,25 +1,23 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const app = express();
+import { MongoClient } from "mongodb";
 
-// Connect to your MongoDB database
-mongoose.connect('mongodb://localhost/your-database', { useNewUrlParser: true });
+// Replace the uri string with your connection string.
+const uri = "<connection string uri>";
 
-// Create a Mongoose schema and model
-const Schema = mongoose.Schema;
-const yourSchema = new Schema({ name: String });
-const YourModel = mongoose.model('YourModel', yourSchema);
+const client = new MongoClient(uri);
 
-// Define Express routes that interact with the database
-app.get('/api/data', async (req, res) => {
+async function run() {
   try {
-    const data = await YourModel.find();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+    const database = client.db('sample_mflix');
+    const movies = database.collection('movies');
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+    // Query for a movie that has the title 'Back to the Future'
+    const query = { title: 'Back to the Future' };
+    const movie = await movies.findOne(query);
+
+    console.log(movie);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
