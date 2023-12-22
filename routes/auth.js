@@ -1,6 +1,5 @@
 const userModel = require("../models/user.Model");
 const router = require("express").Router();
-const crypto = require('crypto');
 const userCtrl = require("../controllers/user.controller");
 
 //Register user
