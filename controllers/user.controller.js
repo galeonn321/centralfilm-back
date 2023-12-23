@@ -11,7 +11,7 @@ async function hashPassword(password) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 async function decryptPassword(password) {
     try {
@@ -24,7 +24,7 @@ async function decryptPassword(password) {
             data: ""
         });
     }
-}
+};
 
 userCtrl.register = async (req, res) => {
     try {
@@ -68,9 +68,26 @@ userCtrl.login = async (req, res) => {
         const user = await userModel.findOne({ username: req.body.username });
         const email = await userModel.findOne({ username: req.body.email });
         if (user || email) {
-
+            const matchPasswords = await decryptPassword(req.body.password)
+            if (matchPasswords) {
+                const token = generateToken(user);
+                return res.status(200).json({
+                    ok: true,
+                    message: `Welcome back ${user.username}`,
+                    data: { ...user._doc, password: null, token }
+                })
+            }
         }
+        return res
+            .status(404)
+            .json({ ok: false, message: "Not user found", data: "" });
     } catch (error) {
-
+        res.status(500).json({
+            ok: false,
+            message: error.message,
+            data: "",
+        });
     }
-} 
+};
+
+module.exports = userCtrl;
