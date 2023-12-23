@@ -13,6 +13,19 @@ async function hashPassword(password) {
     }
 }
 
+async function decryptPassword(password) {
+    try {
+        const decryptPass = await bcrypt.compare(password, hash);
+        return decryptPass;
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            message: `Internal server error. ${error}`,
+            data: ""
+        });
+    }
+}
+
 userCtrl.register = async (req, res) => {
     try {
         const userExists = await userModel.findOne({
@@ -49,3 +62,15 @@ userCtrl.register = async (req, res) => {
         });
     }
 };
+
+userCtrl.login = async (req, res) => {
+    try {
+        const user = await userModel.findOne({ username: req.body.username });
+        const email = await userModel.findOne({ username: req.body.email });
+        if (user || email) {
+
+        }
+    } catch (error) {
+
+    }
+} 
