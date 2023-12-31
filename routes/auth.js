@@ -1,4 +1,3 @@
-const userModel = require("../models/user.Model");
 const router = require("express").Router();
 const userCtrl = require("../controllers/user.controller");
 
