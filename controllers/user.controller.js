@@ -13,11 +13,12 @@ async function hashPassword(password) {
     }
 };
 
-async function decryptPassword(password) {
+async function decryptPassword(password, hashedPassword) {
     try {
-        const decryptPass = await bcrypt.compare(password, hash);
+        const decryptPass = await bcrypt.compare(password, hashedPassword);
         return decryptPass;
     } catch (error) {
+        // Handle errors appropriately (e.g., log, throw, or return a value)
         res.status(500).json({
             ok: false,
             message: `Internal server error. ${error}`,
@@ -29,8 +30,7 @@ async function decryptPassword(password) {
 userCtrl.register = async (req, res) => {
     try {
         const userExists = await userModel.findOne({
-            username: req.body.username,
-            email: req.body.email
+            $or: [{ username: req.body.username }, { email: req.body.email }],
         });
 
         if (userExists) {
@@ -44,7 +44,7 @@ userCtrl.register = async (req, res) => {
         const newUser = new userModel({
             username: req.body.username,
             email: req.body.email,
-            password: await hashPassword(req.body.password)
+            password: await hashPassword(req.body.password),
         });
 
         await newUser.save();
@@ -52,35 +52,39 @@ userCtrl.register = async (req, res) => {
         res.status(200).json({
             ok: true,
             message: 'User registered successfully.',
-            data: newUser
+            data: newUser,
         });
     } catch (error) {
         res.status(500).json({
             ok: false,
             message: 'Internal server error.',
-            data: ""
+            data: "",
         });
     }
 };
 
 userCtrl.login = async (req, res) => {
     try {
-        const user = await userModel.findOne({ username: req.body.username });
-        const email = await userModel.findOne({ username: req.body.email });
-        if (user || email) {
-            const matchPasswords = await decryptPassword(req.body.password)
+        const user = await userModel.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] });
+
+        if (user) {
+            const matchPasswords = await decryptPassword(req.body.password, user.password);
+
             if (matchPasswords) {
+                // Assuming you have a generateToken function
                 const token = generateToken(user);
+
                 return res.status(200).json({
                     ok: true,
                     message: `Welcome back ${user.username}`,
-                    data: { ...user._doc, password: null, token }
-                })
+                    data: { ...user._doc, password: null, token },
+                });
             }
         }
+
         return res
             .status(404)
-            .json({ ok: false, message: "Not user found", data: "" });
+            .json({ ok: false, message: "No user found", data: "" });
     } catch (error) {
         res.status(500).json({
             ok: false,
