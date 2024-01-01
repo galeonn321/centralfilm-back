@@ -16,5 +16,3 @@ app.use("/api/auth", auth);
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
-
-// ... rest of your Express setup
