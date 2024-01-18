@@ -17,10 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  token:{
-    type: String,
-    required: false,
-  }
+  // token:{
+  //   type: String,
+  //   required: false,
+  // }
 });
 
 // Create the User model

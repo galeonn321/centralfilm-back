@@ -41,13 +41,13 @@ userCtrl.register = async (req, res) => {
       });
     }
     
-    const token = generateToken(user);
+    // const token = generateToken(user);
 
     const newUser = new userModel({
       username: req.body.username,
       email: req.body.email,
       password: await hashPassword(req.body.password),
-      token,
+      // token,
     });
 
     await newUser.save();
@@ -56,7 +56,7 @@ userCtrl.register = async (req, res) => {
       ok: true,
       message: "User registered successfully.",
       data: newUser,
-      token: token,
+      // token: token,
     });
   } catch (error) {
     res.status(500).json({
