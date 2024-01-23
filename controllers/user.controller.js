@@ -2,6 +2,7 @@ const userCtrl = {};
 const userModel = require("../models/user.Model");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const generateToken = require("../helpers/generateToken");
 
 async function hashPassword(password) {
   try {
@@ -28,6 +29,9 @@ async function decryptPassword(password, hashedPassword) {
 }
 
 userCtrl.register = async (req, res) => {
+  console.log("User registration started.");
+  const token = generateToken(req.body);
+  console.log(token, 'equis de');
   try {
     const userExists = await userModel.findOne({
       $or: [{ username: req.body.username }, { email: req.body.email }],
@@ -41,13 +45,15 @@ userCtrl.register = async (req, res) => {
       });
     }
     
-    // const token = generateToken(user);
+    const token = generateToken(req.body);
+    console.log(token);
 
     const newUser = new userModel({
+      userId: new ObjectId(),
       username: req.body.username,
       email: req.body.email,
       password: await hashPassword(req.body.password),
-      // token,
+      token: token,
     });
 
     await newUser.save();
@@ -56,7 +62,6 @@ userCtrl.register = async (req, res) => {
       ok: true,
       message: "User registered successfully.",
       data: newUser,
-      // token: token,
     });
   } catch (error) {
     res.status(500).json({
@@ -102,5 +107,6 @@ userCtrl.login = async (req, res) => {
     });
   }
 };
+
 
 module.exports = userCtrl;

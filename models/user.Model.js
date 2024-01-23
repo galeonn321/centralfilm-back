@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 
 // Define the User schema
 const userSchema = new mongoose.Schema({
+  userId:{
+    type: String,
+    required: true,
+    unique: true,
+  },
   username: {
     type: String,
     required: true,
@@ -17,10 +22,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // token:{
-  //   type: String,
-  //   required: false,
-  // }
+  token:{
+    type: String,
+    required: true,
+  }
 });
 
 // Create the User model
