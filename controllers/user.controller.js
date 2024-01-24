@@ -2,7 +2,8 @@ const userCtrl = {};
 const userModel = require("../models/user.Model");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const generateToken = require("../helpers/generateToken");
+const { ObjectId } = require('mongodb');
+// const generateToken = require("../helpers/generateToken");
 
 async function hashPassword(password) {
   try {
@@ -29,9 +30,7 @@ async function decryptPassword(password, hashedPassword) {
 }
 
 userCtrl.register = async (req, res) => {
-  console.log("User registration started.");
-  const token = generateToken(req.body);
-  console.log(token, 'equis de');
+  
   try {
     const userExists = await userModel.findOne({
       $or: [{ username: req.body.username }, { email: req.body.email }],
@@ -44,16 +43,19 @@ userCtrl.register = async (req, res) => {
         data: "",
       });
     }
+
+    const newObjectId = new ObjectId();
+    console.log('Auto-generated ObjectId:', newObjectId);
     
-    const token = generateToken(req.body);
-    console.log(token);
+  // const token = generateToken(req.body);
+  // console.log(token);
 
     const newUser = new userModel({
-      userId: new ObjectId(),
+      userId: newObjectId,
       username: req.body.username,
       email: req.body.email,
       password: await hashPassword(req.body.password),
-      token: token,
+      // token: token,
     });
 
     await newUser.save();
@@ -64,6 +66,7 @@ userCtrl.register = async (req, res) => {
       data: newUser,
     });
   } catch (error) {
+    console.log("Error registering user", error);
     res.status(500).json({
       ok: false,
       message: "Internal server error.",
