@@ -49,7 +49,8 @@ userCtrl.register = async (req, res) => {
     const newObjectId = new ObjectId();
     console.log('Auto-generated ObjectId:', newObjectId);
 
-    // const token = generateToken(req.body);
+    console.log(req.body, 'THIS IS THE REQ.BODY');
+    const token = generateToken(req.body);
     // console.log(token);
 
     const newUser = new userModel({
@@ -57,9 +58,9 @@ userCtrl.register = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: await hashPassword(req.body.password),
-      // token: token,
+      token: token,
     });
-
+    console.log(newUser, 'THIS IS THE NEWUSER BEFORE STORING IT INTO MONGODB');
     await newUser.save();
 
     res.status(200).json({
@@ -94,7 +95,7 @@ userCtrl.login = async (req, res) => {
         console.log('password match', matchPasswords);
         // Assuming you have a generateToken function
         const token = generateToken(user);
-        
+
         console.log('token: ', token)
 
         return res.status(200).json({
