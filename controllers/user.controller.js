@@ -58,7 +58,6 @@ userCtrl.register = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: await hashPassword(req.body.password),
-      token: token,
     });
     console.log(newUser, 'THIS IS THE NEWUSER BEFORE STORING IT INTO MONGODB');
     await newUser.save();
@@ -66,7 +65,7 @@ userCtrl.register = async (req, res) => {
     res.status(200).json({
       ok: true,
       message: "User registered successfully.",
-      data: newUser,
+      data: {newUser, token},
     });
   } catch (error) {
     console.log("Error registering user", error);
@@ -117,6 +116,10 @@ userCtrl.login = async (req, res) => {
     });
   }
 };
+
+userCtrl.logout = async (req,res) =>{
+
+}
 
 
 module.exports = userCtrl;

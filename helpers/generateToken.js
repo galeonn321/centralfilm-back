@@ -17,4 +17,12 @@ const generateToken = (user) => {
     }
 };
 
+const validateToken = (token) =>{
+
+}
+
+const renewToken = (token) =>{
+
+}
+
 module.exports = generateToken;
