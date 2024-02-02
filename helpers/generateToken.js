@@ -1,14 +1,17 @@
 const jwt = require("jsonwebtoken");
 
 const generateToken = (user) => {
-    console.log("user", user)
     try {
         const payload = {
-            userId: user._id,
+            userId: user.userId,
+            username:user.username,
+            email:user.email
         };
 
+        console.log('data stored:', payload)
+
         const token = jwt.sign(payload, process.env.JWTSECRET, {
-            expiresIn: "30d",
+            expiresIn: "60d",
         });
 
         return token;
@@ -17,7 +20,7 @@ const generateToken = (user) => {
     }
 };
 
-const validateToken = (token) =>{
+const authenticateToken = (token) =>{
 
 }
 
