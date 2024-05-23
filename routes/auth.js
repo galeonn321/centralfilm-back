@@ -1,10 +1,13 @@
 const router = require("express").Router();
 const userCtrl = require("../controllers/user.controller");
 
-//Register user
+// AUTH ROUTERS
 router.post("/register", userCtrl.register);
-
-//Login User
 router.post("/login", userCtrl.login);
+
+
+
+//MOVIE ROUTERS
+router.post("/")
 
 module.exports = router;

@@ -4,7 +4,7 @@
   "description": "Find the best films with real reviews.",
   "main": "server.js",
   "directories": {
-    "test": "tests"
+    "central_film": "central_film"
   },
   "scripts": {
     "start": "nodemon server.js"
